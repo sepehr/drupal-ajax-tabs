@@ -1,0 +1,11 @@
+; $ Id$
+name = Ajax Tabs
+description = This module Ajaxifies Drupal tabs (menu_local_tasks)
+core = 6.x
+dependencies[] = ajax_load
+; Information added by drupal.org packaging script on 2009-08-04
+version = "6.x-0.1"
+core = "6.x"
+project = "ajax_tabs"
+datestamp = "1249395312"
+

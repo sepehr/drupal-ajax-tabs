@@ -1,0 +1,18 @@
+<?php
+// $Id: ajax_tabs.install,v 1.1 2009/08/04 14:00:02 doublethink Exp $
+
+/**
+ * Implementaton of hook_install
+ */
+function ajax_tabs_install() {
+  db_query("UPDATE {system} SET weight = 100 WHERE name = 'ajax_tabs'");
+  drupal_set_message(t("Ajax Tabs is installed successfully."));
+}
+
+/**
+ * Implementaton of hook_uninstall
+ */
+function ajax_tabs_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'ajax_tabs_%'");
+  db_query("DELETE FROM {system} WHERE name = 'ajax_tabs'");
+}

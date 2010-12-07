@@ -1,0 +1,96 @@
+<?php
+// $Id: ajax_tabs.module,v 1.1 2009/08/04 14:00:02 doublethink Exp $
+
+function ajax_tabs_add_files() {
+	drupal_add_js(drupal_get_path('module', 'ajax_tabs') . '/ajax_tabs.js');
+}
+
+function ajax_tabs_menu() {
+  $items = array();
+	
+  $items['admin/settings/ajax-tabs'] = array(
+    'title' => t('Ajax Tabs settings'),
+    'description' => t('AJAXifies Drupal menu local tasks'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ajax_tabs_admin'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+  );
+  
+  return $items;
+}
+
+function ajax_tabs_admin() {
+	$form['vis_settings'] = array(
+		'#type' => 'fieldset',
+		'#title' => t('Ajax Tabs'),
+		'#weight' => 0,
+		'#collapsible' => TRUE,
+		'#collapsed' => TRUE,
+	);
+	
+	$options = array(t('Activate on every page except the listed pages.'), t('Activate on only the listed pages.'));
+    $description = t("Enter one page per line as Drupal paths. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>'));
+
+    $form['vis_settings']['ajax_tabs_visibility'] = array(
+      '#type' => 'radios',
+      '#title' => t('Activate on specific pages'),
+      '#options' => $options,
+      '#default_value' => variable_get('ajax_tabs_visibility', 0),
+    );
+    $form['vis_settings']['ajax_tabs_pages'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Pages'),
+      '#default_value' => variable_get('ajax_tabs_pages', ''),
+      '#description' => $description,
+    );
+	
+	return system_settings_form($form);
+}
+
+
+function ajax_tabs_process_visibility($visibility, $pages) {
+	if ($pages) {
+		$path = drupal_get_path_alias($_GET['q']);
+		$page_match = drupal_match_path($path, $pages);
+		if ($path != $_GET['q']) {
+			$page_match = $page_match || drupal_match_path($_GET['q'],$pages);
+		}
+		$page_match = !($visibility xor $page_match);
+	}
+	else { $page_match = TRUE; }	
+	return $page_match;
+}
+
+/*
+Implementation of hook_theme_registry_alter
+*/
+function ajax_tabs_theme_registry_alter(&$theme_registry) {
+	$theme_registry['page']['preprocess functions'][] = 'ajax_tabs_preprocess_page';
+}
+
+function ajax_tabs_preprocess_page(&$vars){
+	$vis = variable_get('ajax_tabs_visibility', 0);
+	$pages = variable_get('ajax_tabs_pages', '');
+	$active = ajax_tabs_process_visibility($vis, $pages);
+	if($active) {
+		$element_id = 'AjaxTabs-wrapper';
+		$content = $vars['content'];
+		preg_match('/\<div\ id\=\"AjaxTabs\-wrapper\"\>/', $vars['content']) ? null : $vars['content'] = "<div id=\"$element_id\">\n" . $content .  "\n</div>";
+		ajax_tabs_add_files();
+		$vars['scripts'] = drupal_get_js();
+		if (isset($_REQUEST['AjaxTabs']) && $_REQUEST['AjaxTabs']) {
+			ajax_tabs_callback($vars);
+		}
+	}
+}
+
+function ajax_tabs_callback($page_variables) {
+	$result = array(
+		'content' => $page_variables['content'],
+		'head_title' => $page_variables['head_title'],
+		'__callbacks' => array('Drupal.AjaxTabs.contentCallback'),
+	);
+	drupal_alter('ajax_data', $result, 'ajax_tabs_ajax');
+	exit(drupal_json($result));
+}
