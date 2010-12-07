@@ -2,7 +2,7 @@
 
 Description
 ===========
-The module ajaxifies MENU_LOCAL_TABS links.
+The module ajaxifies MENU_LOCAL_TASK links.
 
 
 Dependencies
