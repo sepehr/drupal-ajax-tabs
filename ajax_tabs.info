@@ -1,6 +1,6 @@
 ; $Id$
 name = Ajax Tabs
-description = Ajaxifies Drupal tabs (MENU_LOCAL_TABS)
+description = Ajaxifies local tabs. (MENU_LOCAL_TABS)
 core = 6.x
 dependencies[] = ajax_load
 
