@@ -2,17 +2,25 @@
 // $Id: ajax_tabs.install,v 1.1 2009/08/04 14:00:02 doublethink Exp $
 
 /**
- * Implementaton of hook_install
+ * @file
+ * Contains un/installation hook implementations.
+ */
+
+/**
+ * Implements hook_install().
  */
 function ajax_tabs_install() {
   db_query("UPDATE {system} SET weight = 100 WHERE name = 'ajax_tabs'");
-  drupal_set_message(t("Ajax Tabs is installed successfully."));
+  drupal_set_message(st('<a href="!link">Ajax Tabs</a> is installed successfully.',
+    array('!link' => url('admin/settings/ajax-tabs'))
+  ));
 }
 
 /**
- * Implementaton of hook_uninstall
+ * Implements hook_uninstall().
  */
 function ajax_tabs_uninstall() {
-  db_query("DELETE FROM {variable} WHERE name LIKE 'ajax_tabs_%'");
-  db_query("DELETE FROM {system} WHERE name = 'ajax_tabs'");
+  variable_del('ajax_tabs_pages');
+  variable_del('ajax_tabs_selector');
+  variable_del('ajax_tabs_visibility');
 }
