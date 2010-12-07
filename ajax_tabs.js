@@ -1,4 +1,4 @@
-// $Id: ajax_tabs.js,v 1.1 2009/08/04 14:00:02 doublethink Exp $
+// $Id$
 
 Drupal.AjaxTabs = Drupal.AjaxTabs || {};
 Drupal.behaviors.AjaxTabs = function(context) {

@@ -1,5 +1,5 @@
 <?php
-// $Id: ajax_tabs.install,v 1.1 2009/08/04 14:00:02 doublethink Exp $
+// $Id$
 
 /**
  * @file
@@ -24,3 +24,4 @@ function ajax_tabs_uninstall() {
   variable_del('ajax_tabs_selector');
   variable_del('ajax_tabs_visibility');
 }
+
