@@ -10,30 +10,6 @@
  */
 
 /**
- * Helper function to include necessary JS stuffs.
- *
- * @param $type
- *   Type of JS stuff to add.
- *   - includes: Adds required JS file.
- *   - settings: Injects settings into JS.
- */
-function ajax_tabs_add_js($type = 'includes') {
-  switch ($type) {
-    case 'includes':
-      drupal_add_js(drupal_get_path('module', 'ajax_tabs') . '/ajax_tabs.js');
-      return;
-
-    case 'settings':
-      drupal_add_js(array(
-        'ajaxTabs' => array(
-          'selector' => variable_get('ajax_tabs_selector', '#tabs-wrapper'),
-        ),
-      ), 'setting');
-      return;
-  }
-}
-
-/**
  * Implements hook_menu().
  */
 function ajax_tabs_menu() {
@@ -146,9 +122,9 @@ function ajax_tabs_preprocess_page(&$vars) {
     $element_id = 'AjaxTabs-wrapper';
     $content = $vars['content'];
     preg_match('/\<div\ id\=\"AjaxTabs\-wrapper\"\>/', $vars['content']) ? NULL : $vars['content'] = "<div id=\"$element_id\">\n" . $content .  "\n</div>";
-    ajax_tabs_add_js('includes');
+    _ajax_tabs_add_js('includes');
     $vars['scripts'] = drupal_get_js();
-    ajax_tabs_add_js('settings');
+    _ajax_tabs_add_js('settings');
     if (isset($_REQUEST['AjaxTabs']) && $_REQUEST['AjaxTabs']) {
       ajax_tabs_callback($vars);
     }
@@ -160,6 +136,8 @@ function ajax_tabs_preprocess_page(&$vars) {
  *
  * @param $page_variables
  *   An array of page variables.
+ *
+ * @see ajax_load.module
  */
 function ajax_tabs_callback($page_variables) {
   $result = array(
@@ -170,5 +148,29 @@ function ajax_tabs_callback($page_variables) {
 
   drupal_alter('ajax_data', $result, 'ajax_tabs_ajax');
   exit(drupal_json($result));
+}
+
+/**
+ * Helper function to include necessary JS stuffs.
+ *
+ * @param $type
+ *   Type of JS stuff to add.
+ *   - includes: Adds required JS file.
+ *   - settings: Injects settings into JS.
+ */
+function _ajax_tabs_add_js($type = 'includes') {
+  switch ($type) {
+    case 'includes':
+      drupal_add_js(drupal_get_path('module', 'ajax_tabs') . '/ajax_tabs.js');
+      return;
+
+    case 'settings':
+      drupal_add_js(array(
+        'ajaxTabs' => array(
+          'selector' => variable_get('ajax_tabs_selector', '#tabs-wrapper'),
+        ),
+      ), 'setting');
+      return;
+  }
 }
 
