@@ -1,6 +1,26 @@
 // $Id$
 
+/**
+ * @file
+ * Contains Ajax Tabs JS behaviors.
+ */
+
+/**
+ * Defines AjaxTabs mother object.
+ */
 Drupal.AjaxTabs = Drupal.AjaxTabs || {};
+
+/**
+ * AjaxTabs helper callback.
+ */
+Drupal.AjaxTabs.contentCallback = function(target, response) {
+  target = $(target).hide().html(response.content).fadeIn();
+  Drupal.attachBehaviors(target);
+}
+
+/**
+ * AjaxTabs main JS behavior.
+ */
 Drupal.behaviors.AjaxTabs = function(context) {
   $(Drupal.settings.ajaxTabs.selector).find('a').click(function() {
     var target = $('#AjaxTabs-wrapper');
@@ -31,7 +51,3 @@ Drupal.behaviors.AjaxTabs = function(context) {
   });
 }
 
-Drupal.AjaxTabs.contentCallback = function(target, response) {
-  target = $(target).hide().html(response.content).fadeIn();
-  Drupal.attachBehaviors(target);
-}
