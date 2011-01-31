@@ -76,6 +76,13 @@ function ajax_tabs_admin() {
 }
 
 /**
+ * Implements hook_theme_registry_alter().
+ */
+function ajax_tabs_theme_registry_alter(&$theme_registry) {
+  $theme_registry['page']['preprocess functions'][] = 'ajax_tabs_preprocess_page';
+}
+
+/**
  * Helper function to decide whether to use Ajax Tabs or not.
  *
  * @param $visibility
@@ -86,7 +93,7 @@ function ajax_tabs_admin() {
  * @return
  *   Boolean value.
  */
-function ajax_tabs_process_visibility($visibility, $pages) {
+function _ajax_tabs_process_visibility($visibility, $pages) {
   if ($pages) {
     $path = drupal_get_path_alias($_GET['q']);
     $page_match = drupal_match_path($path, $pages);
@@ -104,19 +111,12 @@ function ajax_tabs_process_visibility($visibility, $pages) {
 }
 
 /**
- * Implements hook_theme_registry_alter().
- */
-function ajax_tabs_theme_registry_alter(&$theme_registry) {
-  $theme_registry['page']['preprocess functions'][] = 'ajax_tabs_preprocess_page';
-}
-
-/**
  * Implements module_preprocess_hook().
  */
 function ajax_tabs_preprocess_page(&$vars) {
   $visibility = variable_get('ajax_tabs_visibility', 0);
   $pages = variable_get('ajax_tabs_pages', '');
-  $active = ajax_tabs_process_visibility($visibility, $pages);
+  $active = _ajax_tabs_process_visibility($visibility, $pages);
 
   if ($active) {
     $element_id = 'AjaxTabs-wrapper';
