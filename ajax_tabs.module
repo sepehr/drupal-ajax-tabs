@@ -4,6 +4,9 @@
 /**
  * @file
  * Contains hook implemetations and module helper fucntions.
+ *
+ * @todo
+ * Add preloader as discussed in #540610.
  */
 
 /**
