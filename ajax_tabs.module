@@ -78,15 +78,15 @@ function ajax_tabs_admin() {
 /**
  * Helper function to decide whether to use Ajax Tabs or not.
  *
- * @param $visibilityibility
+ * @param $visibility
  *   Visibility type.
  * @param $pages
- *   A list of pages on which the $visibilityibility type should be applied.
+ *   A list of pages on which the $visibility type should be applied.
  *
  * @return
  *   Boolean value.
  */
-function ajax_tabs_process_visibility($visibilityibility, $pages) {
+function ajax_tabs_process_visibility($visibility, $pages) {
   if ($pages) {
     $path = drupal_get_path_alias($_GET['q']);
     $page_match = drupal_match_path($path, $pages);
@@ -94,7 +94,7 @@ function ajax_tabs_process_visibility($visibilityibility, $pages) {
     if ($path != $_GET['q']) {
       $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
     }
-    $page_match = !($visibilityibility xor $page_match);
+    $page_match = !($visibility xor $page_match);
   }
   else {
     $page_match = TRUE;
